@@ -1,0 +1,122 @@
+<!-- File: index.html -->
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voucher Hotspot App</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/styles/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.1/dist/tesseract.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js" defer></script>
+    <script src="config.js" defer></script>
+    <script src="js/utils.js" defer></script>
+    <script src="js/auth.js" defer></script>
+    <script src="js/ocr.js" defer></script>
+    <script src="js/storage.js" defer></script>
+    <script src="js/sync.js" defer></script>
+    <script src="js/reports.js" defer></script>
+    <script src="js/app.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.1/dist/tesseract.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <!-- Navigation bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <span id="syncStatus" class="badge bg-warning text-dark ms-2">Offline</span>
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Voucher Hotspot</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <!-- Dropdown Bahasa -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="langDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            🌐 <span id="currentLang">ID</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="langDropdown">
+                            <li><a class="dropdown-item" href="#"
+                                    onclick="setLanguage('id'); document.getElementById('currentLang').innerText='ID'">Bahasa
+                                    Indonesia</a></li>
+                            <li><a class="dropdown-item" href="#"
+                                    onclick="setLanguage('en'); document.getElementById('currentLang').innerText='EN'">English</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <!-- Logout -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="btnLogout">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="container py-4">
+        <div id="userGreeting" class="mb-4 text-end fw-bold text-primary">
+            <span id="userInfo"></span>
+            <span id="badgeTerjualHariIni" class="badge bg-success"></span>
+        </div>
+
+        <!-- Scan & Input Section -->
+        <section class="mb-4">
+            <h4>Input Kode Voucher</h4>
+            <div class="mb-3">
+                <button class="btn btn-outline-primary" onclick="startScan()">Scan dengan Kamera</button>
+                <input type="text" id="manualInput" class="form-control mt-2" placeholder="Atau input manual...">
+                <button class="btn btn-success mt-2" onclick="saveVoucher()">Simpan Voucher</button>
+            </div>
+            <div id="voucherInfo" class="alert alert-info d-none"></div>
+        </section>
+
+        <!-- Laporan & Statistik -->
+        <section>
+            <h4>Laporan Penjualan</h4>
+            <div class="row mb-2">
+                <div class="col">
+                    <select class="form-select" id="filterRange" onchange="renderReport()">
+                        <option value="today">Hari Ini</option>
+                        <option value="yesterday">Kemarin</option>
+                        <option value="thisMonth">Bulan Ini</option>
+                        <option value="lastMonth">Bulan Lalu</option>
+                        <option value="all">Semua</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <select class="form-select" id="filterUser" onchange="renderReport()">
+                        <option value="">Semua Pengguna</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <select class="form-select" id="filterPaket" onchange="renderReport()">
+                        <option value="">Semua Paket</option>
+                        <option value="1">Paket1</option>
+                        <option value="2">Paket2</option>
+                        <option value="3">Paket3</option>
+                        <option value="8">Paket4</option>
+                        <option value="0">Paket5</option>
+                    </select>
+                </div>
+            </div>
+            <div id="reportTable" class="table-responsive"></div>
+            <div id="salesChart" class="mt-4"></div>
+            <button class="btn btn-outline-secondary mt-3" onclick="exportToExcel()">Export Excel</button>
+            <button class="btn btn-outline-danger mt-3" onclick="resetLocalData()">Reset Data Lokal</button>
+            <button class="btn btn-outline-primary mt-3" onclick="forceSync()">Sinkronisasi ke Google Sheet</button>
+        </section>
+    </main>
+
+    <footer class="text-center py-3 bg-light border-top">
+        <small>&copy; 2025 Orbitnet Hotspot App</small>
+    </footer>
+</body>
+
+</html>

@@ -1,0 +1,32 @@
+body {
+  background-color: #f5f7fa;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.navbar-brand {
+  font-weight: bold;
+}
+
+#voucherInfo {
+  white-space: pre-wrap;
+  font-size: 0.9rem;
+}
+
+/* Dark mode toggle example (can be expanded later) */
+body.dark-mode {
+  background-color: #121212;
+  color: #fff;
+}
+
+#badgeTerjualHariIni {
+  font-size: 1rem;
+  margin-left: 10px;
+  vertical-align: middle;
+}
+
+/* Responsive fix */
+@media (max-width: 768px) {
+  .navbar-brand {
+    font-size: 1.1rem;
+  }
+}

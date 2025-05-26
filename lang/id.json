@@ -1,0 +1,18 @@
+{
+  "scan_with_camera": "Scan dengan Kamera",
+  "input_manual": "Atau input manual...",
+  "save_voucher": "Simpan Voucher",
+  "report_sales": "Laporan Penjualan",
+  "export_excel": "Export Excel",
+  "reset_local_data": "Reset Data Lokal",
+  "filter_all_users": "Semua Pengguna",
+  "filter_all_paket": "Semua Paket",
+  "today": "Hari Ini",
+  "yesterday": "Kemarin",
+  "this_month": "Bulan Ini",
+  "last_month": "Bulan Lalu",
+  "all": "Semua",
+  "voucher_saved": "Voucher berhasil disimpan!",
+  "voucher_duplicate": "Voucher sudah ada!",
+  "invalid_voucher": "Kode voucher tidak valid"
+}

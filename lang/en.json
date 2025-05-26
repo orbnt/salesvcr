@@ -1,0 +1,18 @@
+{
+  "scan_with_camera": "Scan with Camera",
+  "input_manual": "Or input manually...",
+  "save_voucher": "Save Voucher",
+  "report_sales": "Sales Report",
+  "export_excel": "Export Excel",
+  "reset_local_data": "Reset Local Data",
+  "filter_all_users": "All Users",
+  "filter_all_paket": "All Packages",
+  "today": "Today",
+  "yesterday": "Yesterday",
+  "this_month": "This Month",
+  "last_month": "Last Month",
+  "all": "All",
+  "voucher_saved": "Voucher saved!",
+  "voucher_duplicate": "Voucher already exists!",
+  "invalid_voucher": "Invalid voucher code"
+}

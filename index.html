@@ -27,7 +27,7 @@
 <body>
     <!-- Navigation bar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <span id="syncStatus" class="badge bg-warning text-dark ms-2">Offline</span>
+        <span id="statusKoneksi" class="badge bg-success ms-3">Online</span>
         <div class="container-fluid">
             <a class="navbar-brand" href="#">Voucher Hotspot</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -117,6 +117,23 @@
     <footer class="text-center py-3 bg-light border-top">
         <small>&copy; 2025 Orbitnet Hotspot App</small>
     </footer>
+    <script>
+        function updateStatusKoneksi() {
+  const el = document.getElementById('statusKoneksi');
+  if (!el) return;
+  if (navigator.onLine) {
+    el.textContent = 'Online';
+    el.className = 'badge bg-success ms-3';
+  } else {
+    el.textContent = 'Offline';
+    el.className = 'badge bg-danger ms-3';
+  }
+}
+window.addEventListener('online', updateStatusKoneksi);
+window.addEventListener('offline', updateStatusKoneksi);
+document.addEventListener('DOMContentLoaded', updateStatusKoneksi);
+
+    </script>
 </body>
 
 </html>

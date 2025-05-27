@@ -1,4 +1,4 @@
-// Laporan penjualan voucher & grafik 7 hari terakhir
+// reports.js - Laporan penjualan & grafik tren 7 hari terakhir
 
 function getReportData() {
   const range = document.getElementById('filterRange').value;
@@ -9,26 +9,24 @@ function getReportData() {
   let start, end, now = new Date();
   switch(range) {
     case 'today':
-      start = new Date(now.setHours(0,0,0,0));
-      end = new Date(now.setHours(23,59,59,999));
+      start = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0,0,0,0);
+      end = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23,59,59,999);
       break;
     case 'yesterday':
-      start = new Date(now.setDate(now.getDate()-1));
-      start.setHours(0,0,0,0);
-      end = new Date(start);
-      end.setHours(23,59,59,999);
+      start = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1, 0,0,0,0);
+      end = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1, 23,59,59,999);
       break;
     case 'thisMonth':
-      start = new Date(now.getFullYear(), now.getMonth(), 1);
-      end = new Date(now.getFullYear(), now.getMonth()+1, 0, 23,59,59,999);
+      start = new Date(now.getFullYear(), now.getMonth(), 1, 0,0,0,0);
+      end = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23,59,59,999);
       break;
     case 'lastMonth':
-      start = new Date(now.getFullYear(), now.getMonth()-1, 1);
+      start = new Date(now.getFullYear(), now.getMonth() - 1, 1, 0,0,0,0);
       end = new Date(now.getFullYear(), now.getMonth(), 0, 23,59,59,999);
       break;
     default:
-      start = new Date(2000,0,1);
-      end = new Date(2100,0,1);
+      start = new Date(2000,0,1,0,0,0,0);
+      end = new Date(2100,0,1,0,0,0,0);
   }
 
   let data = all.filter(v => {
@@ -86,14 +84,15 @@ function renderSalesChart() {
   chartContainer.innerHTML = `<canvas id="${chartCanvasId}" height="80"></canvas>`;
 
   let allVouchers = loadLocalVouchers();
-  // Data 7 hari terakhir
+
+  // Ambil tanggal hari ini setiap kali fungsi dijalankan!
   let labels = [];
   let totals = [];
-  let today = new Date();
   for (let i = 6; i >= 0; i--) {
-    let d = new Date(today.getFullYear(), today.getMonth(), today.getDate() - i);
-    let dstr = d.toISOString().slice(0, 10);
-    labels.push(dstr.slice(5)); // MM-DD
+    let d = new Date(); // Buat objek baru tiap iterasi!
+    d.setDate(d.getDate() - i);
+    let dstr = d.toISOString().slice(0, 10); // Format YYYY-MM-DD
+    labels.push(dstr.slice(5).replace('-','/')); // Format MM/DD (biar lebih jelas)
     let total = allVouchers.filter(v => (v.timestamp || '').slice(0, 10) === dstr).length;
     totals.push(total);
   }
@@ -113,6 +112,8 @@ function renderSalesChart() {
       }]
     },
     options: {
+      responsive: true,
+      maintainAspectRatio: false,
       scales: {
         y: {
           beginAtZero: true,

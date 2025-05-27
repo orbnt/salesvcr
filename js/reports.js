@@ -1,10 +1,8 @@
-// Laporan penjualan, filter, dan grafik
+// Laporan penjualan voucher & grafik 7 hari terakhir
 
 function getReportData() {
   const range = document.getElementById('filterRange').value;
-  const userId = document.getElementById('filterUser').value;
   const paket = document.getElementById('filterPaket').value;
-
   let all = loadLocalVouchers();
 
   // Filter data by waktu
@@ -36,8 +34,7 @@ function getReportData() {
   let data = all.filter(v => {
     let t = new Date(v.timestamp || v.time);
     let ok = t >= start && t <= end;
-    if (userId) ok = ok && v.userId === userId;
-    if (paket) ok = ok && v.jenis && v.jenis.endsWith(paket);
+    if (paket && v.package) ok = ok && v.package.endsWith(paket);
     return ok;
   });
   return data;
@@ -50,10 +47,12 @@ function renderReport() {
   let sum = {'Paket1':0, 'Paket2':0, 'Paket3':0, 'Paket4':0, 'Paket5':0};
   let total = 0;
   data.forEach(v => {
-    if (v.jenis && count[v.jenis] !== undefined) {
-      count[v.jenis]++;
-      sum[v.jenis] += parseInt(v.harga||0);
-      total += parseInt(v.harga||0);
+    let jenis = v.package || v.jenis;
+    let harga = v.price || v.harga || 0;
+    if (jenis && count[jenis] !== undefined) {
+      count[jenis]++;
+      sum[jenis] += parseInt(harga || 0);
+      total += parseInt(harga || 0);
     }
   });
 
@@ -77,18 +76,8 @@ function renderReport() {
   `;
   document.getElementById('reportTable').innerHTML = html;
 
-  // Chart tren (pakai Chart.js jika ingin lebih keren, ini dummy chart)
-  renderSalesChart(data);
-
-  // Filter user (dropdown)
-  let all = loadLocalVouchers();
-  let users = {};
-  all.forEach(v => users[v.userId] = v.userName);
-  let opt = '<option value="">Semua Pengguna</option>';
-  Object.entries(users).forEach(([id, name])=>{
-    opt += `<option value="${id}">${name||id}</option>`;
-  });
-  document.getElementById('filterUser').innerHTML = opt;
+  // Chart tren penjualan 7 hari terakhir
+  renderSalesChart();
 }
 
 function renderSalesChart() {
@@ -96,15 +85,8 @@ function renderSalesChart() {
   let chartContainer = document.getElementById('salesChart');
   chartContainer.innerHTML = `<canvas id="${chartCanvasId}" height="80"></canvas>`;
 
-  // --- Ambil userId login untuk filter grafik (hanya data user login, admin = semua)
-  const user = JSON.parse(localStorage.getItem('user'));
   let allVouchers = loadLocalVouchers();
-  // Kalau admin, grafik total semua user; kalau user biasa, hanya userId-nya
-  if (!user || user.role !== 'admin') {
-    allVouchers = allVouchers.filter(v => v.userId === user.id);
-  }
-
-  // --- Data 7 hari terakhir (label selalu 7 hari terakhir!)
+  // Data 7 hari terakhir
   let labels = [];
   let totals = [];
   let today = new Date();
@@ -142,7 +124,6 @@ function renderSalesChart() {
   });
 }
 
-
 // Export ke Excel (.xlsx)
 function exportToExcel() {
   let data = getReportData();
@@ -150,7 +131,12 @@ function exportToExcel() {
   let ws_data = [
     ["Kode", "Jenis", "Harga", "Tanggal", "User", "Synced"],
     ...data.map(v=>[
-      v.code, v.jenis, v.harga, formatDateTime(v.timestamp), v.userName, v.synced?'Ya':'Belum'
+      v.code,
+      v.package || v.jenis,
+      v.price || v.harga,
+      formatDateTime(v.timestamp),
+      v.userName,
+      v.synced ? 'Ya' : 'Belum'
     ])
   ];
   let wb = XLSX.utils.book_new();

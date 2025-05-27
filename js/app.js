@@ -26,7 +26,6 @@ function saveVoucher() {
     updateTerjualHariIni();
 }
 
-
 function editVoucher(code) {
     // tampilkan modal edit jika diperlukan
 }
@@ -72,6 +71,14 @@ document.addEventListener('DOMContentLoaded', () => {
     renderReport();
     updateTerjualHariIni();
     setInterval(updateTerjualHariIni, 5000); // opsional
+
+    // --- Tampilkan tombol admin jika login sebagai admin ---
+    const user = JSON.parse(localStorage.getItem('user'));
+    const adminEmail = "orbitnethotspot@gmail.com";
+    if (user && user.email === adminEmail) {
+        const btn = document.getElementById('btnAdminReport');
+        if (btn) btn.style.display = "";
+    }
 });
 
 

@@ -1,55 +1,45 @@
 // Sinkronisasi data dengan Google Sheets via GAS
 
-async function syncVouchers() {
+function syncVouchersNoCORS() {
   const user = JSON.parse(localStorage.getItem('user'));
   if (!user) return;
-  // Ambil voucher lokal yang belum synced
   const vouchers = loadLocalVouchers().filter(v => !v.synced);
   if (vouchers.length === 0) return showToast('Tidak ada data yang perlu disinkron!', 'info');
 
-  showToast('Sinkronisasi dimulai...', 'info');
-  
-  // Kirim seluruh array vouchers sekaligus
+  showToast('Sinkronisasi dikirim...', 'info');
+
   fetch(GAS_URL, {
     method: 'POST',
+    mode: 'no-cors', // <- Kunci anti CORS!
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       action: "addVoucher",
-      data: vouchers
+      data: vouchers // <-- array data voucher yang dikirim
     })
   })
-  .then(res => res.text())
-  .then(txt => {
-    try {
-      const json = JSON.parse(txt);
-      if (json.status === "success") {
-        // Update status synced lokal
-        saveLocalVouchers(loadLocalVouchers().map(v => {
-          if (vouchers.some(lv => lv.code === v.code)) {
-            return {...v, synced: true};
-          }
-          return v;
-        }));
-        showToast("Sinkronisasi berhasil: " + json.message, 'success');
-        renderReport();
-      } else {
-        showToast("Gagal: " + (json.message || "Error"), 'danger');
+  .then(() => {
+    // **TIDAK bisa baca response**, jadi anggap saja sukses
+    // Update status synced voucher lokal
+    saveLocalVouchers(loadLocalVouchers().map(v => {
+      if (vouchers.some(lv => lv.code === v.code)) {
+        return { ...v, synced: true };
       }
-    } catch (e) {
-      showToast("Respon server tidak dikenali: " + txt, 'danger');
-    }
+      return v;
+    }));
+    showToast('Sinkronisasi (dikirim) — Cek Google Sheet Anda!', 'success');
+    renderReport();
   })
-  .catch(err => {
-    showToast("Fetch error: " + err, 'danger');
+  .catch(() => {
+    showToast('Gagal sinkron (cek koneksi Anda)', 'danger');
   });
 }
 
 window.addEventListener('online', () => {
   showToast('Online, mulai sinkronisasi...', 'info');
-  syncVouchers();
+  syncVouchersNoCORS();
 });
 
 // Tombol manual trigger
 function forceSync() {
-  syncVouchers();
+  syncVouchersNoCORS();
 }

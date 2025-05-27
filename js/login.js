@@ -5,12 +5,12 @@ window.addEventListener("DOMContentLoaded", function () {
   function handleCredentialResponse(response) {
     const payload = JSON.parse(atob(response.credential.split('.')[1]));
     const user = {
-      id: payload.sub,
-      name: payload.name,
-      email: payload.email,
-      picture: payload.picture,
-      role: payload.email === "orbitnethotspot@gmail.com" ? "admin" : "user"
-    };
+  id: payload.sub,
+  name: payload.name,
+  email: payload.email,
+  picture: payload.picture,
+  role: payload.email === "orbitnethotspot@gmail.com" ? "admin" : "user"
+};
     localStorage.setItem("user", JSON.stringify(user));
     window.location.href = "index.html";
   }

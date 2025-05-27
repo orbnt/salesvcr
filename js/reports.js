@@ -123,6 +123,7 @@ function renderSalesChart() {
       }
     }
   });
+  console.log('renderSalesChart dijalankan!');
 }
 
 // Export ke Excel (.xlsx)

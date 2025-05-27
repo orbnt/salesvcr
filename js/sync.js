@@ -14,7 +14,7 @@ function syncVoucherHotspot() {
 
     if (vouchers.length === 0) return alert("Tidak ada voucher baru untuk dikirim!");
 
-    fetch("https://script.google.com/macros/s/AKfycbxy5erA_RMGlIC3L-Iq9fmoJgZeMouLLD6s3Gw1dGRrs0bpX-kLCBKHcW9biXE-VuDppQ/exec", {
+    fetch("https://script.google.com/macros/s/AKfycbyU-MGApTAATPyEhj9hRlEXmnuYhKAYcigdJ_JtLletPGzd6gQGAZd1ZHCiGttG5B7o/exec", {
         method: 'POST',
         mode: 'no-cors',
         headers: { 'Content-Type': 'application/json' },

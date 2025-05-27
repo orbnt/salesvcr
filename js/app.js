@@ -9,22 +9,23 @@ function saveVoucher() {
         return;
     }
     let data = {
-        ...info,
         code: code,
-        harga: info.harga,
-        jenis: info.jenis,
+        package: info.jenis,     // gunakan 'package', isi dari info.jenis
+        price: info.harga,       // gunakan 'price', isi dari info.harga
         userId: user.id,
         userName: user.name,
         timestamp: new Date().toISOString(),
+        device: navigator.userAgent, // isi field device (misal: Chrome/Android/iPhone)
         synced: false
     };
     if (!addVoucherLocal(data)) return;
     renderReport();
     document.getElementById('manualInput').value = '';
     showVoucherInfo('');
-    renderReport(); // render laporan penjualan
-    updateTerjualHariIni(); // update badge setelah simpan voucher
+    renderReport();
+    updateTerjualHariIni();
 }
+
 
 function editVoucher(code) {
     // tampilkan modal edit jika diperlukan

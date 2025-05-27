@@ -26,6 +26,7 @@ function saveVoucher() {
     updateTerjualHariIni();
 }
 
+
 function editVoucher(code) {
     // tampilkan modal edit jika diperlukan
 }
@@ -71,38 +72,6 @@ document.addEventListener('DOMContentLoaded', () => {
     renderReport();
     updateTerjualHariIni();
     setInterval(updateTerjualHariIni, 5000); // opsional
-
-    // --- Tampilkan tombol admin jika login sebagai admin ---
-    const user = JSON.parse(localStorage.getItem('user'));
-    const adminEmail = "orbitnethotspot@gmail.com";
-    if (user && user.email === adminEmail) {
-        const btn = document.getElementById('btnAdminReport');
-        if (btn) btn.style.display = "";
-    }
-});
-
-// Panggil setelah user login atau reload halaman
-async function fetchUserVouchers() {
-  const user = JSON.parse(localStorage.getItem('user'));
-  if (!user) return;
-  const url = `${CONFIG.GAS_URL}?action=getUserVouchers&userId=${encodeURIComponent(user.id)}`;
-  try {
-    const response = await fetch(url);
-    const data = await response.json();
-    if (data.status === "success") {
-      saveLocalVouchers(data.data || []);
-      renderReport(); // Tampilkan ke tabel laporan user
-    } else {
-      showToast('Gagal load data user dari Sheet', 'danger');
-    }
-  } catch (e) {
-    showToast('Gagal load data dari Sheet: ' + e.message, 'danger');
-  }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  fetchUserVouchers();
-  // ... fungsi lain seperti renderReport()
 });
 
 

@@ -8,18 +8,16 @@ function syncVouchersNoCORS() {
 
   showToast('Sinkronisasi dikirim...', 'info');
 
-  fetch(GAS_URL, {
+  fetch(CONFIG.GAS_URL, { // <--- ini yang benar!
     method: 'POST',
-    mode: 'no-cors', // <- Kunci anti CORS!
+    mode: 'no-cors',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       action: "addVoucher",
-      data: vouchers // <-- array data voucher yang dikirim
+      data: vouchers
     })
   })
   .then(() => {
-    // **TIDAK bisa baca response**, jadi anggap saja sukses
-    // Update status synced voucher lokal
     saveLocalVouchers(loadLocalVouchers().map(v => {
       if (vouchers.some(lv => lv.code === v.code)) {
         return { ...v, synced: true };
@@ -33,6 +31,7 @@ function syncVouchersNoCORS() {
     showToast('Gagal sinkron (cek koneksi Anda)', 'danger');
   });
 }
+
 
 window.addEventListener('online', () => {
   showToast('Online, mulai sinkronisasi...', 'info');

@@ -3,37 +3,45 @@
 async function syncVouchers() {
   const user = JSON.parse(localStorage.getItem('user'));
   if (!user) return;
+  // Ambil voucher lokal yang belum synced
   const vouchers = loadLocalVouchers().filter(v => !v.synced);
   if (vouchers.length === 0) return showToast('Tidak ada data yang perlu disinkron!', 'info');
 
   showToast('Sinkronisasi dimulai...', 'info');
-  for (let data of vouchers) {
+  
+  // Kirim seluruh array vouchers sekaligus
+  fetch(GAS_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      action: "addVoucher",
+      data: vouchers
+    })
+  })
+  .then(res => res.text())
+  .then(txt => {
     try {
-      let res = await fetch(CONFIG.GAS_URL, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-          action: 'append',
-          voucher: { ...data, userId: user.id, userName: user.name }
-        })
-      });
-      let result = await res.json();
-      if (result.success) {
-        data.synced = true;
-        data.syncedAt = Date.now();
+      const json = JSON.parse(txt);
+      if (json.status === "success") {
+        // Update status synced lokal
+        saveLocalVouchers(loadLocalVouchers().map(v => {
+          if (vouchers.some(lv => lv.code === v.code)) {
+            return {...v, synced: true};
+          }
+          return v;
+        }));
+        showToast("Sinkronisasi berhasil: " + json.message, 'success');
+        renderReport();
       } else {
-        showToast(result.message || 'Gagal sync voucher', 'danger');
+        showToast("Gagal: " + (json.message || "Error"), 'danger');
       }
-    } catch (err) {
-      showToast('Gagal koneksi saat sync', 'danger');
+    } catch (e) {
+      showToast("Respon server tidak dikenali: " + txt, 'danger');
     }
-  }
-  saveLocalVouchers(loadLocalVouchers().map(v => {
-    let local = vouchers.find(lv => lv.code === v.code);
-    return local ? {...v, ...local} : v;
-  }));
-  showToast('Sinkronisasi selesai!', 'success');
-  renderReport();
+  })
+  .catch(err => {
+    showToast("Fetch error: " + err, 'danger');
+  });
 }
 
 window.addEventListener('online', () => {

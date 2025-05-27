@@ -51,7 +51,9 @@
                             </li>
                         </ul>
                     </li>
-                    <a class="nav-link" href="admin.html" id="btnAdminReport" style="display:none">Laporan Admin</a>
+                    <li class="nav-item" id="btnAdminReport" style="display:none;">
+                        <a class="nav-link" href="admin.html">Laporan Admin</a>
+                    </li>
                     <!-- Logout -->
                     <li class="nav-item">
                         <a class="nav-link" href="#" id="btnLogout">Logout</a>
@@ -120,21 +122,28 @@
         <small>&copy; 2025 Orbitnet Hotspot App</small>
     </footer>
     <script>
-        function updateStatusKoneksi() {
-  const el = document.getElementById('statusKoneksi');
-  if (!el) return;
-  if (navigator.onLine) {
-    el.textContent = 'Online';
-    el.className = 'badge bg-success ms-3';
-  } else {
-    el.textContent = 'Offline';
-    el.className = 'badge bg-danger ms-3';
-  }
-}
-window.addEventListener('online', updateStatusKoneksi);
-window.addEventListener('offline', updateStatusKoneksi);
-document.addEventListener('DOMContentLoaded', updateStatusKoneksi);
 
+        document.addEventListener('DOMContentLoaded', function() {
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  if (user && user.email === 'orbitnethotspot@gmail.com') {
+    document.getElementById('btnAdminReport').style.display = '';
+  }
+});
+
+        function updateStatusKoneksi() {
+            const el = document.getElementById('statusKoneksi');
+            if (!el) return;
+            if (navigator.onLine) {
+                el.textContent = 'Online';
+                el.className = 'badge bg-success ms-3';
+            } else {
+                el.textContent = 'Offline';
+                el.className = 'badge bg-danger ms-3';
+            }
+        }
+        window.addEventListener('online', updateStatusKoneksi);
+        window.addEventListener('offline', updateStatusKoneksi);
+        document.addEventListener('DOMContentLoaded', updateStatusKoneksi);
     </script>
 </body>
 

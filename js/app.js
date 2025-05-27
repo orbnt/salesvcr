@@ -81,6 +81,30 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// Panggil setelah user login atau reload halaman
+async function fetchUserVouchers() {
+  const user = JSON.parse(localStorage.getItem('user'));
+  if (!user) return;
+  const url = `${CONFIG.GAS_URL}?action=getUserVouchers&userId=${encodeURIComponent(user.id)}`;
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    if (data.status === "success") {
+      saveLocalVouchers(data.data || []);
+      renderReport(); // Tampilkan ke tabel laporan user
+    } else {
+      showToast('Gagal load data user dari Sheet', 'danger');
+    }
+  } catch (e) {
+    showToast('Gagal load data dari Sheet: ' + e.message, 'danger');
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  fetchUserVouchers();
+  // ... fungsi lain seperti renderReport()
+});
+
 
 window.saveVoucher = saveVoucher;
 window.startScan = startScan;
